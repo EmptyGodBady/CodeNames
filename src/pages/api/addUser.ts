@@ -6,21 +6,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
     
-        console.log("1123");
 
         if(!mongoClient) throw new Error("Error while connecting to mongodb client")
 
 
       const db = mongoClient.db('mydatabase');
 
-      // Пример данных, которые вы хотите сохранить
       const newData = {
         name: req.body.name,
-        email: req.body.email,
-        message: req.body.message,
+        teamIdentifier: null,
       };
 
-      // Сохранение данных в коллекцию MongoDB
       const result = await db.collection('messages').insertOne(newData);
 
       res.status(201).json({ message: 'Data saved successfully', data: result});

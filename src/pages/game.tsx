@@ -1,9 +1,10 @@
 import Card from "@/components/Card";
 import CopyTextButton from "@/components/Card/coppyLinkButton";
+import TeamColumn from "@/components/lobby/TeamColumn";
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-[#114357] flex flex-col">
+    <main className="min-h-screen bg-[#114357] flex flex-col text-white">
       <header className="h-8 flex justify-between m-2">
         <div>
           <CopyTextButton />
@@ -11,10 +12,12 @@ export default function Page() {
         <div>Name</div>
       </header>
       <div className="flex justify-between">
-        <div className="h-[600px] w-[100px] border flex flex-col justify-between">
-          <div>sfs</div>
-          <div>sfs</div>
-        </div>
+        <TeamColumn ident={"1"} />
+        {/* 1. Добавить юзера в локалсторедж после нажатия на сабмит входа в
+        комнату 2. Передать в комнату идентифаер 3. Внутри метода в комнате
+        обратиться к локалстореджу и забрать имя в переменную 4. Вкинуть
+        идентифаер и имя внутрь фетча на assignTeam (don't forget to change
+        method from POST TO PUT)  */}
         <div className="flex w-[900px] h-[600px] flex-wrap content-start ">
           <Card></Card>
           <Card></Card>
@@ -37,10 +40,7 @@ export default function Page() {
           <Card></Card>
           <Card></Card>
         </div>
-        <div className="h-[600px] w-[100px] border flex flex-col justify-between">
-          <div>sfs</div>
-          <div>sfs</div>
-        </div>
+        <TeamColumn ident="2" />
       </div>
     </main>
   );
