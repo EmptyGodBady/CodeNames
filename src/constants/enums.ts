@@ -1,8 +1,10 @@
 export enum ETeamIdentifiers {
-    TeamA = "TeamA",
-    TeamB = "TeamB",
+  TeamA = "TeamA",
+  TeamB = "TeamB",
 }
-export enum ERootEndpoints{
-    AddUser = "/api/addUser",
-    AssignTeam = "/api/assignTeam"
+export enum ERootEndpoints {
+  User = "/api/user",
+}
+export enum ECollections {
+  Users = "users",
 }

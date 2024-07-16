@@ -8,14 +8,23 @@ type Props = PropsWithChildren<{
 export default function TeamColumn({ ident }: Props) {
   const [isButtonVisible, setIsButtonVisible] = useState(true);
   async function onEnterTeam() {
+    const name = localStorage.getItem("name");
     setIsButtonVisible(false); //need to complete
-    const updatedUser = await fetch(ERootEndpoints.AssignTeam, {
+    await fetch(ERootEndpoints.User, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name, teamIdentifier: ident }),
     });
+    try {
+      const users = await fetch(ERootEndpoints.User, {
+        method: "GET",
+      });
+      console.log(await users.json());
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (

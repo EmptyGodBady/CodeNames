@@ -1,6 +1,7 @@
 import Card from "@/components/Card";
 import CopyTextButton from "@/components/Card/coppyLinkButton";
 import TeamColumn from "@/components/lobby/TeamColumn";
+import { ETeamIdentifiers } from "@/constants/enums";
 
 export default function Page() {
   return (
@@ -12,7 +13,7 @@ export default function Page() {
         <div>Name</div>
       </header>
       <div className="flex justify-between">
-        <TeamColumn ident={"1"} />
+        <TeamColumn ident={ETeamIdentifiers.TeamA} />
         {/* 1. Добавить юзера в локалсторедж после нажатия на сабмит входа в
         комнату 2. Передать в комнату идентифаер 3. Внутри метода в комнате
         обратиться к локалстореджу и забрать имя в переменную 4. Вкинуть
@@ -40,7 +41,7 @@ export default function Page() {
           <Card></Card>
           <Card></Card>
         </div>
-        <TeamColumn ident="2" />
+        <TeamColumn ident={ETeamIdentifiers.TeamB} />
       </div>
     </main>
   );
