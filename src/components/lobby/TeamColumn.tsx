@@ -1,36 +1,52 @@
 import { ERootEndpoints, ETeamIdentifiers } from "@/constants/enums";
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 
 type Props = PropsWithChildren<{
-  ident: string;
+  columnIdentifier: string;
+  columnUsers: any;
+  playerName: string;
+  setColumnUsers: any;
 }>;
 
-export default function TeamColumn({ ident }: Props) {
-  const [isButtonVisible, setIsButtonVisible] = useState(true);
+export default function TeamColumn({
+  columnIdentifier,
+  playerName,
+  columnUsers,
+  setColumnUsers,
+}: Props) {
   async function onEnterTeam() {
-    const name = localStorage.getItem("name");
-    setIsButtonVisible(false); //need to complete
     await fetch(ERootEndpoints.User, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, teamIdentifier: ident }),
+      body: JSON.stringify({
+        name: playerName,
+        teamIdentifier: columnIdentifier,
+      }),
     });
     try {
       const users = await fetch(ERootEndpoints.User, {
         method: "GET",
       });
-      console.log(await users.json());
+      const { data } = await users.json();
+      setColumnUsers(data);
     } catch (error) {
       console.error(error);
     }
   }
 
+  const currentUserIdentifier =
+    columnUsers &&
+    columnUsers?.find((user) => user.name === playerName).teamIdentifier;
+
+  const isIdentifiersEqual = columnIdentifier === currentUserIdentifier;
+
   return (
-    <div className="h-[600px] w-[100px] border flex flex-col justify-between">
-      {isButtonVisible && (
+    <div className="h-[600px] w-[130px] border rounded-md mx-5 flex flex-col  border-black">
+      {!isIdentifiersEqual && (
         <button
+          className="border-b rounded-y-md border-black bg-neutral-800 overflow-hidden"
           onClick={() => {
             onEnterTeam();
           }}
@@ -38,7 +54,9 @@ export default function TeamColumn({ ident }: Props) {
           Enter Team
         </button>
       )}
-      <div>sfs</div>
+      <div className="text-black px-2">
+        {isIdentifiersEqual && currentUserIdentifier !== null && playerName}
+      </div>
     </div>
   );
 }

@@ -23,14 +23,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
       const db = mongoClient.db("mydatabase");
       const result = await db.collection(ECollections.Users).find({}).toArray();
-      console.log(result);
       return res
         .status(201)
         .json({ message: "Data returned successfully", data: result });
     }
     if (req.method === "PUT") {
       const { name, teamIdentifier } = req.body;
-
       const db = mongoClient.db("mydatabase");
       const result = await db
         .collection(ECollections.Users)
