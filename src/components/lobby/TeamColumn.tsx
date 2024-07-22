@@ -3,10 +3,15 @@ import { PropsWithChildren, useEffect, useState } from "react";
 
 type Props = PropsWithChildren<{
   columnIdentifier: string;
-  columnUsers: any;
+  columnUsers: IColumnUsers[];
   playerName: string;
   setColumnUsers: any;
 }>;
+type IColumnUsers = {
+  _id: string;
+  name: string;
+  teamIdentifier: string;
+};
 
 export default function TeamColumn({
   columnIdentifier,
@@ -38,7 +43,8 @@ export default function TeamColumn({
 
   const currentUserIdentifier =
     columnUsers &&
-    columnUsers?.find((user) => user.name === playerName).teamIdentifier;
+    columnUsers?.find((user) => user.name === playerName)?.teamIdentifier;
+  console.log(columnUsers?.find((user) => user.name === playerName));
 
   const isIdentifiersEqual = columnIdentifier === currentUserIdentifier;
 

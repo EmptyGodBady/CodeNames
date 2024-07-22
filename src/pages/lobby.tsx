@@ -4,10 +4,12 @@ import { useState } from "react";
 
 export default function Page() {
   const [name, setName] = useState("");
+
   const router = useRouter();
+
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-
+    console.log(123);
     const response = await fetch(ERootEndpoints.User, {
       method: "POST",
       headers: {
@@ -19,12 +21,14 @@ export default function Page() {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("name", name);
+      console.log(222);
       router.push("/game");
       console.log("Data saved:", data);
     } else {
       console.error("Failed to save data");
     }
   };
+
   return (
     <main className="min-h-screen bg-neutral-500 flex flex-col justify-center items-center">
       <form

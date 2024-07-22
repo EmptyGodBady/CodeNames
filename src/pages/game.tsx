@@ -9,21 +9,19 @@ export default function Page() {
   const [gameWords, setGameWords] = useState<string[]>([]);
   const [cardsAmount] = useState<number>(25);
   const [columnUsers, setColumnUsers] = useState();
-
   const [playerName, setPlayerName] = useState("");
+
   function getRandomItems<T>(array: T[], count: number): T[] {
     const shuffled = array.slice().sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   }
-  const generateCards = useCallback(() => {
-    console.log(123);
 
+  const generateCards = useCallback(() => {
     return Array.from({ length: cardsAmount }, (_, index) => ({
       content: `${gameWords[index]}`,
       key: gameWords[index] + index,
     }));
   }, [cardsAmount, gameWords]);
-  console.log(1);
 
   async function prepareUser() {
     await fetch(ERootEndpoints.User, {
@@ -42,6 +40,36 @@ export default function Page() {
 
     setColumnUsers(data);
   }
+
+  async function onClosingTab() {
+    await fetch(ERootEndpoints.User, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: playerName,
+      }),
+    });
+  }
+
+  const useBeforeUnload = (handler: (event: BeforeUnloadEvent) => void) => {
+    useEffect(() => {
+      const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+        handler(event);
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }, [handler]);
+  };
+
+  useBeforeUnload((event) => {
+    onClosingTab();
+  });
 
   useEffect(() => {
     prepareUser();

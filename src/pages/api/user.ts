@@ -27,6 +27,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         .status(201)
         .json({ message: "Data returned successfully", data: result });
     }
+
+    if (req.method === "DELETE") {
+      const { name } = req.body;
+      const db = mongoClient.db("mydatabase");
+
+      const result = await db
+        .collection(ECollections.Users)
+        .deleteOne({ name: { $eq: name } });
+
+      if (result.deletedCount === 1) {
+        return res.status(200).json({ message: "Data deleted successfully" });
+      } else {
+        return res.status(404).json({ message: "Data not found" });
+      }
+    }
+
     if (req.method === "PUT") {
       const { name, teamIdentifier } = req.body;
       const db = mongoClient.db("mydatabase");
