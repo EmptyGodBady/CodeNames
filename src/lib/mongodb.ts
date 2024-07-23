@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 
-const mongoUri =
-  "mongodb+srv://virtusprodam12:xfzo4qIpnlv1mpZk@cluster0.8gwxcxu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const mongoUrl = process.env.DATABASE_URL!;
 
 class MongoSingleton {
   private static mongoClient: MongoClient;
@@ -13,7 +12,7 @@ class MongoSingleton {
   static getClient(): MongoClient {
     if (this.isInitialized()) return this.mongoClient;
 
-    this.mongoClient = new MongoClient(mongoUri);
+    this.mongoClient = new MongoClient(mongoUrl);
     return this.mongoClient;
   }
 }

@@ -4,6 +4,9 @@ import TeamColumn from "@/components/lobby/TeamColumn";
 import { ERootEndpoints, ETeamIdentifiers } from "@/constants/enums";
 import { words } from "@/words";
 import { useCallback, useEffect, useState } from "react";
+import io, { Socket } from "socket.io-client";
+
+let socket: Socket;
 
 export default function Page() {
   const [gameWords, setGameWords] = useState<string[]>([]);
@@ -53,6 +56,13 @@ export default function Page() {
     });
   }
 
+  const sendMessage = () => {
+    if (socket) {
+      socket.emit("message", "Hello World");
+      console.log(123);
+    }
+  };
+
   const useBeforeUnload = (handler: (event: BeforeUnloadEvent) => void) => {
     useEffect(() => {
       const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -70,6 +80,23 @@ export default function Page() {
   useBeforeUnload((event) => {
     onClosingTab();
   });
+  useEffect(() => {
+    socket = io({
+      path: "/api/socketio",
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server");
+    });
+
+    socket.on("message", (msg: string) => {
+      console.log("New message: " + msg);
+    });
+
+    return () => {
+      if (socket) socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     prepareUser();
@@ -93,6 +120,7 @@ export default function Page() {
         <div>
           <CopyTextButton />
         </div>
+        <button onClick={sendMessage}>send message</button>
         <div className="inline-block rounded bg-neutral-700 px-6 pb-2 pt-2 text-xs font-medium leading-normal text-neutral-400 shadow-dark-3 w-[130px] text-center">
           {playerName}
         </div>

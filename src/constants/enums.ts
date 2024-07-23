@@ -7,4 +7,5 @@ export enum ERootEndpoints {
 }
 export enum ECollections {
   Users = "users",
+  Messages = "messages",
 }
