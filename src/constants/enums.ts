@@ -9,3 +9,8 @@ export enum ECollections {
   Users = "users",
   Messages = "messages",
 }
+export enum EUserRole {
+  Spectator = "spectator",
+  Spy = "spy",
+  Scout = "scout",
+}

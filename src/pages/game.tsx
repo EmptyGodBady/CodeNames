@@ -1,6 +1,6 @@
 import Card from "@/components/Card";
 import CopyTextButton from "@/components/coppyLinkButton";
-import TeamColumn from "@/components/lobby/TeamColumn";
+import TeamColumn from "@/components/game/TeamColumn";
 import { ERootEndpoints, ETeamIdentifiers } from "@/constants/enums";
 import { words } from "@/words";
 import { useCallback, useEffect, useState } from "react";
@@ -44,18 +44,6 @@ export default function Page() {
     setColumnUsers(data);
   }
 
-  async function onClosingTab() {
-    await fetch(ERootEndpoints.User, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: playerName,
-      }),
-    });
-  }
-
   const sendMessage = () => {
     if (socket) {
       socket.emit("message", "Hello World");
@@ -63,23 +51,6 @@ export default function Page() {
     }
   };
 
-  const useBeforeUnload = (handler: (event: BeforeUnloadEvent) => void) => {
-    useEffect(() => {
-      const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-        handler(event);
-      };
-
-      window.addEventListener("beforeunload", handleBeforeUnload);
-
-      return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-      };
-    }, [handler]);
-  };
-
-  useBeforeUnload((event) => {
-    onClosingTab();
-  });
   useEffect(() => {
     socket = io({
       path: "/api/socketio",

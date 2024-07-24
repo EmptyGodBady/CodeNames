@@ -1,4 +1,4 @@
-import { ECollections } from "@/constants/enums";
+import { ECollections, EUserRole } from "@/constants/enums";
 import { mongoClient } from "@/lib/mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -13,6 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const newData = {
         name: req.body.name,
         teamIdentifier: null,
+        userRole: EUserRole.Spectator,
       };
       const result = await db.collection(ECollections.Users).insertOne(newData);
       return res
@@ -29,14 +30,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "DELETE") {
-      const { name } = req.body;
       const db = mongoClient.db("mydatabase");
 
-      const result = await db
-        .collection(ECollections.Users)
-        .deleteOne({ name: { $eq: name } });
+      const result = await db.collection(ECollections.Users).deleteMany({});
 
-      if (result.deletedCount === 1) {
+      if (result) {
         return res.status(200).json({ message: "Data deleted successfully" });
       } else {
         return res.status(404).json({ message: "Data not found" });
@@ -44,13 +42,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "PUT") {
-      const { name, teamIdentifier } = req.body;
+      const { name, teamIdentifier, userRole } = req.body;
       const db = mongoClient.db("mydatabase");
       const result = await db
         .collection(ECollections.Users)
         .updateOne(
           { name: { $eq: name } },
-          { $set: { teamIdentifier: teamIdentifier } }
+          { $set: { teamIdentifier: teamIdentifier, userRole: userRole } }
         );
 
       return res

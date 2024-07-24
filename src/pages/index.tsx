@@ -1,6 +1,20 @@
+import { ERootEndpoints } from "@/constants/enums";
 import Link from "next/link";
+import { useEffect } from "react";
+
+async function onClosingTab() {
+  await fetch(ERootEndpoints.User, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
 
 export default function Home() {
+  useEffect(() => {
+    onClosingTab();
+  }, []);
   return (
     <main className="min-h-screen bg-neutral-500 flex flex-col justify-evenly items-center">
       <p className="text-dark text-8xl">CodeNames</p>

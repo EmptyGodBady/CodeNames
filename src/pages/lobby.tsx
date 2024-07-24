@@ -1,4 +1,4 @@
-import { ERootEndpoints } from "@/constants/enums";
+import { ERootEndpoints, EUserRole } from "@/constants/enums";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
