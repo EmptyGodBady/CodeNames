@@ -9,13 +9,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "POST") {
       const db = mongoClient.db("mydatabase");
-      console.log(db);
+
       const newData = {
         name: req.body.name,
         teamIdentifier: null,
         userRole: EUserRole.Spectator,
       };
-      console.log(newData);
       const result = await db.collection(ECollections.Users).insertOne(newData);
       return res
         .status(201)
@@ -23,9 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "GET") {
-      const db = mongoClient.db(
-        "https://code-names-liard.vercel.app/api/usermydatabase"
-      );
+      const db = mongoClient.db("mydatabase");
       const result = await db.collection(ECollections.Users).find({}).toArray();
       return res
         .status(201)
