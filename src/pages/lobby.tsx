@@ -9,7 +9,12 @@ export default function Page() {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    console.log(123);
+    // const res = await fetch(ERootEndpoints.Lobby, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
     const response = await fetch(ERootEndpoints.User, {
       method: "POST",
       headers: {
@@ -21,7 +26,6 @@ export default function Page() {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("name", name);
-      console.log(222);
       router.push("/game");
       console.log("Data saved:", data);
     } else {

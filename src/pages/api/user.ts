@@ -30,9 +30,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "DELETE") {
+      const { name } = req.body;
       const db = mongoClient.db("mydatabase");
 
-      const result = await db.collection(ECollections.Users).deleteMany({});
+      const result = await db
+        .collection(ECollections.Users)
+        .deleteOne({ name: { $eq: name } });
 
       if (result) {
         return res.status(200).json({ message: "Data deleted successfully" });
