@@ -4,9 +4,11 @@ export enum ETeamIdentifiers {
 }
 export enum ERootEndpoints {
   User = "/api/user",
+  Lobby = "/api/lobby",
 }
 export enum ECollections {
   Users = "users",
+  Lobby = "lobby",
   Messages = "messages",
 }
 export enum EUserRole {

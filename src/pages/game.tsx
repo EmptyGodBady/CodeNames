@@ -43,13 +43,24 @@ export default function Page() {
 
     setColumnUsers(data);
   }
+  const startGame = () => {};
 
   const sendMessage = () => {
     if (socket) {
       socket.emit("message", "Hello World");
-      console.log(123);
     }
   };
+  async function onClosingTab(name: string) {
+    await fetch(ERootEndpoints.User, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+      }),
+    });
+  }
 
   useEffect(() => {
     socket = io({
@@ -64,12 +75,6 @@ export default function Page() {
       console.log("New message: " + msg);
     });
 
-    return () => {
-      if (socket) socket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
     prepareUser();
     if (typeof window !== "undefined" && window.localStorage) {
       const name = localStorage.getItem("name");
@@ -80,9 +85,19 @@ export default function Page() {
     const randomizedWords = getRandomItems(words, 25);
     setGameWords(randomizedWords);
     const name = localStorage.getItem("name");
+
     if (name) {
       setPlayerName(name);
     }
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+        const name = localStorage.getItem("name");
+
+        if (name) onClosingTab(name);
+      }
+    };
   }, []);
 
   return (
@@ -91,7 +106,13 @@ export default function Page() {
         <div>
           <CopyTextButton />
         </div>
-        <button onClick={sendMessage}>send message</button>
+        {/* <button onClick={sendMessage}>send message</button> */}
+        <button
+          // onClick={startGame}
+          className="border-b rounded-y-md border-black bg-neutral-800 overflow-hidden rounded-md w-3/4 text-center"
+        >
+          Start Game
+        </button>
         <div className="inline-block rounded bg-neutral-700 px-6 pb-2 pt-2 text-xs font-medium leading-normal text-neutral-400 shadow-dark-3 w-[130px] text-center">
           {playerName}
         </div>

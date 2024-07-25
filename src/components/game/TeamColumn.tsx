@@ -40,7 +40,6 @@ export default function TeamColumn({
       });
       const { data } = await users.json();
       setColumnUsers(data);
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -49,15 +48,11 @@ export default function TeamColumn({
   const currentUserIdentifier =
     columnUsers &&
     columnUsers?.find((user) => user.name === playerName)?.teamIdentifier;
-  console.log(
-    columnUsers?.find((user) => user.name === playerName)?.teamIdentifier
-  );
   const isIdentifiersEqual = columnIdentifier === currentUserIdentifier;
 
   const isColumnUserSpy =
     columnUsers?.find((user) => user.name === playerName)?.userRole ===
     EUserRole.Spy;
-  console.log(isColumnUserSpy);
 
   return (
     <div className="flex flex-col justify-between items-center h-[650px]">
