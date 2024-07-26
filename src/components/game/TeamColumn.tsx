@@ -1,5 +1,7 @@
 import { ERootEndpoints, ETeamIdentifiers, EUserRole } from "@/constants/enums";
 import { PropsWithChildren, useEffect, useState } from "react";
+import setPlayerStatus from "../../../requesters/setPlayerStatus";
+import getAllUsers from "../../../requesters/getAllUsers";
 
 type Props = PropsWithChildren<{
   columnIdentifier: string;
@@ -22,27 +24,9 @@ export default function TeamColumn({
   setColumnUsers,
 }: Props) {
   async function onEnterTeam(role: string) {
-    await fetch(ERootEndpoints.User, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: playerName,
-        teamIdentifier: columnIdentifier,
-        userRole: role,
-      }),
-    });
-
-    try {
-      const users = await fetch(ERootEndpoints.User, {
-        method: "GET",
-      });
-      const { data } = await users.json();
-      setColumnUsers(data);
-    } catch (error) {
-      console.error(error);
-    }
+    await setPlayerStatus(playerName, columnIdentifier, role);
+    const { data } = await getAllUsers();
+    setColumnUsers(data);
   }
 
   const currentUserIdentifier =

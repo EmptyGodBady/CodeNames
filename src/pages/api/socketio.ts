@@ -13,7 +13,7 @@ type NextApiResponseWithSocket = NextApiResponse & {
 };
 
 export default async function handler(
-  req: NextApiRequest,
+  _: NextApiRequest,
   res: NextApiResponseWithSocket
 ) {
   if (!res.socket.server.io) {
@@ -26,13 +26,21 @@ export default async function handler(
     io.on("connection", (socket: Socket) => {
       console.log("A user connected");
 
-      socket.on("message", async (msg: string) => {
-        console.log("Message received: " + msg);
+      socket.on("message", async (message: string) => {
+        console.log("Message received: " + message);
 
         const db = mongoClient.db("mydatabase");
-        const result = await db
-          .collection(ECollections.Messages)
-          .insertOne({ message: msg });
+        await db.collection(ECollections.Messages).insertOne({ message });
+
+        io.emit("message", message);
+      });
+      socket.on("startGame", async (msg: string) => {
+        console.log("startGame: ");
+        console.log(msg);
+        const cards = JSON.parse(msg);
+        console.log(cards);
+        const db = mongoClient.db("mydatabase");
+        await db.collection(ECollections.Cards).insertOne({ cards });
 
         io.emit("message", msg);
       });
