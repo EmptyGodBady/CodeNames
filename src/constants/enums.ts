@@ -10,9 +10,14 @@ export enum ECollections {
   Users = "users",
   Lobby = "lobby",
   Messages = "messages",
+  Cards = "cards",
 }
 export enum EUserRole {
   Spectator = "spectator",
   Spy = "spy",
   Scout = "scout",
+}
+export enum ECardStatus {
+  Hidden = "hidden",
+  Revealed = "revealed",
 }

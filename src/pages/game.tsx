@@ -1,79 +1,33 @@
-import Card from "@/components/Card";
-import CopyTextButton from "@/components/coppyLinkButton";
-import TeamColumn from "@/components/game/TeamColumn";
-import { ERootEndpoints, ETeamIdentifiers } from "@/constants/enums";
-import { words } from "@/words";
-import { useCallback, useEffect, useState } from "react";
-import io, { Socket } from "socket.io-client";
-
-let socket: Socket;
+import { useEffect, useState } from "react";
+import getAllUsers from "../../requesters/getAllUsers";
+import {
+  connectSocket,
+  disconnectSocket,
+} from "@/components/game/socketConnection";
+import Header from "@/components/game/header";
+import MainGameComponent from "@/components/game/mainGameComponent";
+import removeUser from "../../requesters/removeUser";
 
 export default function Page() {
-  const [gameWords, setGameWords] = useState<string[]>([]);
-  const [cardsAmount] = useState<number>(25);
   const [columnUsers, setColumnUsers] = useState();
   const [playerName, setPlayerName] = useState("");
 
-  function getRandomItems<T>(array: T[], count: number): T[] {
-    const shuffled = array.slice().sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-  }
-
-  const generateCards = useCallback(() => {
-    return Array.from({ length: cardsAmount }, (_, index) => ({
-      content: `${gameWords[index]}`,
-      key: gameWords[index] + index,
-    }));
-  }, [cardsAmount, gameWords]);
-
   async function prepareUser() {
-    await fetch(ERootEndpoints.User, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: playerName, teamIdentifier: null }),
-    });
-
-    const users = await fetch(ERootEndpoints.User, {
-      method: "GET",
-    });
-
-    const { data } = await users.json();
-
+    const { data } = await getAllUsers();
     setColumnUsers(data);
   }
-  const startGame = () => {};
 
-  const sendMessage = () => {
-    if (socket) {
-      socket.emit("message", "Hello World");
-    }
-  };
+  // нужно оставить пока так
   async function onClosingTab(name: string) {
-    await fetch(ERootEndpoints.User, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-      }),
-    });
+    await removeUser(name);
   }
 
+  const handleNewMessage = (msg: string) => {
+    console.log("New message: " + msg);
+  };
+
   useEffect(() => {
-    socket = io({
-      path: "/api/socketio",
-    });
-
-    socket.on("connect", () => {
-      console.log("Connected to WebSocket server");
-    });
-
-    socket.on("message", (msg: string) => {
-      console.log("New message: " + msg);
-    });
+    connectSocket("/api/socketio", handleNewMessage);
 
     prepareUser();
     if (typeof window !== "undefined" && window.localStorage) {
@@ -82,8 +36,7 @@ export default function Page() {
         setPlayerName(name);
       }
     }
-    const randomizedWords = getRandomItems(words, 25);
-    setGameWords(randomizedWords);
+
     const name = localStorage.getItem("name");
 
     if (name) {
@@ -91,58 +44,18 @@ export default function Page() {
     }
 
     return () => {
-      if (socket) {
-        socket.disconnect();
-        const name = localStorage.getItem("name");
-
-        if (name) onClosingTab(name);
-      }
+      disconnectSocket(onClosingTab);
     };
   }, []);
 
   return (
     <main className="min-h-screen bg-neutral-300 flex flex-col text-white">
-      <header className="h-8 flex justify-between my-4 mx-5">
-        <div>
-          <CopyTextButton />
-        </div>
-        {/* <button onClick={sendMessage}>send message</button> */}
-        <button
-          // onClick={startGame}
-          className="border-b rounded-y-md border-black bg-neutral-800 overflow-hidden rounded-md w-3/4 text-center"
-        >
-          Start Game
-        </button>
-        <div className="inline-block rounded bg-neutral-700 px-6 pb-2 pt-2 text-xs font-medium leading-normal text-neutral-400 shadow-dark-3 w-[130px] text-center">
-          {playerName}
-        </div>
-      </header>
-      <div className="flex justify-between">
-        {columnUsers && playerName && (
-          <TeamColumn
-            playerName={playerName}
-            columnUsers={columnUsers}
-            columnIdentifier={ETeamIdentifiers.TeamA}
-            setColumnUsers={setColumnUsers}
-          />
-        )}
-
-        <div className="flex w-[900px] h-[600px] flex-wrap content-start ">
-          {gameWords?.length !== 0 &&
-            generateCards().map((card) => (
-              <Card key={card.key} content={card.content} />
-            ))}
-        </div>
-
-        {columnUsers && playerName && (
-          <TeamColumn
-            playerName={playerName}
-            columnUsers={columnUsers}
-            columnIdentifier={ETeamIdentifiers.TeamB}
-            setColumnUsers={setColumnUsers}
-          />
-        )}
-      </div>
+      <Header playerName={playerName} />
+      <MainGameComponent
+        columnUsers={columnUsers}
+        playerName={playerName}
+        setColumnUsers={setColumnUsers}
+      />
     </main>
   );
 }

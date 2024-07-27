@@ -4,12 +4,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    const db = mongoClient.db("mydatabase");
+
     if (!mongoClient)
       throw new Error("Error while connecting to mongodb client");
 
     if (req.method === "POST") {
-      const db = mongoClient.db("mydatabase");
-
       const newData = {
         name: req.body.name,
         teamIdentifier: null,
@@ -22,8 +22,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "GET") {
-      const db = mongoClient.db("mydatabase");
       const result = await db.collection(ECollections.Users).find({}).toArray();
+
       return res
         .status(201)
         .json({ message: "Data returned successfully", data: result });
@@ -31,7 +31,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "DELETE") {
       const { name } = req.body;
-      const db = mongoClient.db("mydatabase");
 
       const result = await db
         .collection(ECollections.Users)
@@ -46,7 +45,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "PUT") {
       const { name, teamIdentifier, userRole } = req.body;
-      const db = mongoClient.db("mydatabase");
       const result = await db
         .collection(ECollections.Users)
         .updateOne(
