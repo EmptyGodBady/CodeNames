@@ -30,6 +30,7 @@ export const sendMessage = <T>(
     });
     return msg;
   }
+  return msg;
 };
 
 export const getCards = async (): Promise<any> => {
