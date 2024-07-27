@@ -5,6 +5,7 @@ export enum ETeamIdentifiers {
 export enum ERootEndpoints {
   User = "/api/user",
   Lobby = "/api/lobby",
+  Cards = "/api/cards",
 }
 export enum ECollections {
   Users = "users",

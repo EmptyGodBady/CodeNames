@@ -1,8 +1,10 @@
+// game.ts
 import { useEffect, useState } from "react";
 import getAllUsers from "../../requesters/getAllUsers";
 import {
   connectSocket,
   disconnectSocket,
+  getCards,
 } from "@/components/game/socketConnection";
 import Header from "@/components/game/header";
 import MainGameComponent from "@/components/game/mainGameComponent";
@@ -22,12 +24,10 @@ export default function Page() {
     await removeUser(name);
   }
 
-  const handleNewMessage = (msg: string) => {
-    console.log("New message: " + msg);
-  };
+  getCards();
 
   useEffect(() => {
-    connectSocket("/api/socketio", handleNewMessage);
+    connectSocket("/api/socketio");
 
     prepareUser();
     if (typeof window !== "undefined" && window.localStorage) {
@@ -35,12 +35,6 @@ export default function Page() {
       if (name) {
         setPlayerName(name);
       }
-    }
-
-    const name = localStorage.getItem("name");
-
-    if (name) {
-      setPlayerName(name);
     }
 
     return () => {
