@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { Dispatch, PropsWithChildren, useState } from "react";
 import React from "react";
 import { words } from "@/words";
-import { sendMessage } from "./socketConnection";
+import { getCards, sendMessage } from "./socketConnection";
 import { ECardStatus } from "@/constants/enums";
+import clearCards from "../../../requesters/clearCards";
 
 type ICard = {
   word: string;
   color: string;
   status: ECardStatus;
 };
+type Props = PropsWithChildren<{
+  setCards: Dispatch<any>;
+}>;
 
-export default function StartGame() {
+export default function StartGame({ setCards }: Props) {
   const [cardsAmount] = useState<number>(25);
-  const [cards, setCards] = useState<ICard[]>([]);
   const [randomizedWords] = useState(getRandomItems(words, 25));
 
   function getRandomItems<T>(array: T[], count: number): T[] {
@@ -20,7 +23,7 @@ export default function StartGame() {
     return shuffled.slice(0, count);
   }
 
-  const starting = () => {
+  const starting = async () => {
     const newItems: ICard[] = [];
     const colors = ["red", "blue", "dark", "white"];
     const colorCounts = [9, 9, 1, 6];
@@ -42,9 +45,17 @@ export default function StartGame() {
 
       count++;
     }
-    setCards(newItems);
-    sendMessage("startGame", newItems);
+    await clearCards();
+    sendMessage<ICard[]>("startGame", newItems, setCards);
     console.log(newItems);
+    try {
+      const newCards = await getCards();
+      console.log(newCards);
+      setCards(newCards[0].cards);
+      console.log(123);
+    } catch (error) {
+      console.error("Failed to get cards:", error);
+    }
   };
 
   return (

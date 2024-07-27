@@ -1,12 +1,10 @@
-// socketService.ts
+// socketConnection
+import { Dispatch } from "react";
 import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 
-export const connectSocket = (
-  path: string,
-  onMessage: (msg: string) => void
-): void => {
+export const connectSocket = (path: string): void => {
   if (socket) return; // Avoid creating multiple connections
 
   socket = io({ path });
@@ -15,13 +13,39 @@ export const connectSocket = (
     console.log("Connected to WebSocket server");
   });
 };
-export const sendMessage = <T>(event: string, msg: T) => {
+
+export const sendMessage = <T>(
+  event: string,
+  msg: T,
+  onMessageEnd: Dispatch<any>
+): T => {
   const message = JSON.stringify(msg);
 
   if (socket) {
-    console.log(message);
     socket.emit(event, message);
+    socket.on(event, (msg: string) => {
+      const message = JSON.parse(msg);
+
+      onMessageEnd(message);
+    });
+    return msg;
   }
+};
+
+export const getCards = async (): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    if (socket) {
+      socket.once("startGame", (msg: string) => {
+        console.log("Game started with message: " + msg);
+        const cards = JSON.parse(msg);
+        resolve(cards);
+      });
+
+      socket.emit("requestCards"); // Assuming you have a server-side handler for this event
+    } else {
+      reject("Socket is not connected");
+    }
+  });
 };
 
 export const disconnectSocket = (
@@ -35,26 +59,3 @@ export const disconnectSocket = (
     socket = null;
   }
 };
-
-// import io, { Socket } from "socket.io-client";
-
-// let socket: Socket;
-// const socketConnection = () => {
-//   socket = io({
-//     path: "/api/socketio",
-//   });
-
-//   socket.on("connect", () => {
-//     console.log("Connected to WebSocket server");
-//   });
-
-//   socket.on("message", (msg: string) => {
-//     console.log("New message: " + msg);
-//   });
-// };
-// const socketDisconnect = () => {
-//   if (socket) {
-//     socket.disconnect();
-//   }
-// };
-// export default { socketConnection, socketDisconnect };

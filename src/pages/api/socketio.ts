@@ -1,3 +1,4 @@
+// socketio.ts
 import { Server as NetServer } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Server as ServerIO, Socket } from "socket.io";
@@ -34,15 +35,28 @@ export default async function handler(
 
         io.emit("message", message);
       });
+
       socket.on("startGame", async (msg: string) => {
         console.log("startGame: ");
-        console.log(msg);
         const cards = JSON.parse(msg);
-        console.log(cards);
         const db = mongoClient.db("mydatabase");
         await db.collection(ECollections.Cards).insertOne({ cards });
 
-        io.emit("message", msg);
+        io.emit("startGame", msg);
+      });
+
+      socket.on("requestCards", async () => {
+        console.log("requestCards event received");
+
+        const db = mongoClient.db("mydatabase");
+        const cards = await db
+          .collection(ECollections.Cards)
+          .find({})
+          .toArray();
+        const cardsString = JSON.stringify(cards);
+
+        // Отправка карт обратно клиенту через событие startGame
+        socket.emit("startGame", cardsString);
       });
 
       socket.on("disconnect", () => {
