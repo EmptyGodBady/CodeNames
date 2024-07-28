@@ -47,11 +47,8 @@ export default function StartGame({ setCards }: Props) {
     }
     await clearCards();
     sendMessage<ICard[]>("startGame", newItems, setCards);
-    console.log(newItems);
     try {
       const newCards = await getCards();
-      console.log(newCards);
-      console.log(123);
     } catch (error) {
       console.error("Failed to get cards:", error);
     }
