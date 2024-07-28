@@ -43,6 +43,7 @@ export default function StartGame({ setCards }: Props) {
         color: colors[colorIndex],
         status: ECardStatus.Hidden,
       });
+      console.log(newItems);
 
       count++;
     }
