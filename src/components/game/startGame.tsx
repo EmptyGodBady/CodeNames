@@ -51,7 +51,6 @@ export default function StartGame({ setCards }: Props) {
     try {
       const newCards = await getCards();
       console.log(newCards);
-      setCards(newCards[0].cards);
       console.log(123);
     } catch (error) {
       console.error("Failed to get cards:", error);

@@ -1,11 +1,11 @@
 // socketConnection
-import { Dispatch } from "react";
 import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 
 export const connectSocket = (path: string): void => {
   if (socket) return; // Avoid creating multiple connections
+  console.log("Connecting to WebSocket server at path: " + path);
 
   socket = io({ path });
 
@@ -17,7 +17,7 @@ export const connectSocket = (path: string): void => {
 export const sendMessage = <T>(
   event: string,
   msg: T,
-  onMessageEnd: Dispatch<any>
+  onMessageEnd: (message: any) => void
 ): T => {
   const message = JSON.stringify(msg);
 
