@@ -23,10 +23,6 @@ export default function MainGameComponent({
 }: Props) {
   const [cards, setCards] = useState<any[]>([]);
 
-  useEffect(() => {
-    console.log("Cards state:", cards);
-  }, [cards]);
-
   return (
     <div className="flex justify-between">
       {columnUsers && playerName && (

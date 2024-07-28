@@ -24,6 +24,7 @@ export default function StartGame({ setCards }: Props) {
   }
 
   const starting = async () => {
+    await clearCards();
     const newItems: ICard[] = [];
     const colors = ["red", "blue", "dark", "white"];
     const colorCounts = [9, 9, 1, 6];
@@ -45,16 +46,7 @@ export default function StartGame({ setCards }: Props) {
 
       count++;
     }
-    await clearCards();
     sendMessage<ICard[]>("startGame", newItems, setCards);
-    console.log(newItems);
-    try {
-      const newCards = await getCards();
-      console.log(newCards);
-      console.log(123);
-    } catch (error) {
-      console.error("Failed to get cards:", error);
-    }
   };
 
   return (
