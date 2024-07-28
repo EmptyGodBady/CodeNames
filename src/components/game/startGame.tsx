@@ -1,7 +1,7 @@
 import { Dispatch, PropsWithChildren, useState } from "react";
 import React from "react";
 import { words } from "@/words";
-import { getCards, sendMessage } from "./socketConnection";
+import { sendMessage } from "./socketConnection";
 import { ECardStatus } from "@/constants/enums";
 import clearCards from "../../../requesters/clearCards";
 

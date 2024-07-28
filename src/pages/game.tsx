@@ -24,7 +24,9 @@ export default function Page() {
   }
 
   useEffect(() => {
-    connectSocket("/api/socketio");
+    console.log(123);
+    connectSocket("https://code-names-liard.vercel.app/api/socketio");
+    console.log(123);
 
     prepareUser();
     if (typeof window !== "undefined" && window.localStorage) {

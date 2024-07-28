@@ -34,21 +34,21 @@ export const sendMessage = <T>(
   return msg;
 };
 
-export const getCards = async (): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    if (socket) {
-      socket.once("startGame", (msg: string) => {
-        console.log("Game started with message: " + msg);
-        const cards = JSON.parse(msg);
-        resolve(cards);
-      });
+// export const getCards = async (): Promise<any> => {
+//   return new Promise((resolve, reject) => {
+//     if (socket) {
+//       socket.once("startGame", (msg: string) => {
+//         console.log("Game started with message: " + msg);
+//         const cards = JSON.parse(msg);
+//         resolve(cards);
+//       });
 
-      socket.emit("requestCards"); // Assuming you have a server-side handler for this event
-    } else {
-      reject("Socket is not connected");
-    }
-  });
-};
+//       socket.emit("requestCards"); // Assuming you have a server-side handler for this event
+//     } else {
+//       reject("Socket is not connected");
+//     }
+//   });
+// };
 
 export const disconnectSocket = (
   onClosingTab: (name: string) => void
