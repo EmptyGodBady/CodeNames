@@ -25,7 +25,7 @@ export default function Page() {
 
   useEffect(() => {
     console.log(123);
-    connectSocket("https://code-names-liard.vercel.app/api/socketio");
+    connectSocket("/api/socketio");
     console.log(123);
 
     prepareUser();
