@@ -25,6 +25,7 @@ export const sendMessage = <T>(
     socket.emit(event, message);
     socket.on(event, (msg: string) => {
       const message = JSON.parse(msg);
+      console.log(message);
 
       onMessageEnd(message);
     });
