@@ -8,7 +8,7 @@ export const connectSocket = (path: string): void => {
   console.log("Connecting to WebSocket server at path: " + path);
 
   socket = io({ path });
-
+  console.log(123);
   socket.on("connect", () => {
     console.log("Connected to WebSocket server");
   });
