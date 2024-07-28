@@ -4,7 +4,6 @@ import getAllUsers from "../../requesters/getAllUsers";
 import {
   connectSocket,
   disconnectSocket,
-  getCards,
 } from "@/components/game/socketConnection";
 import Header from "@/components/game/header";
 import MainGameComponent from "@/components/game/mainGameComponent";
@@ -23,8 +22,6 @@ export default function Page() {
   async function onClosingTab(name: string) {
     await removeUser(name);
   }
-
-  getCards();
 
   useEffect(() => {
     connectSocket("/api/socketio");
