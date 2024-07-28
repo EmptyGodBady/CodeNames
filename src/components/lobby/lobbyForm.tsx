@@ -18,6 +18,7 @@ export default function LobbyForm({ handleSubmit, setName, name }: Props) {
       className="flex flex-col justify-between h-[100px]"
     >
       <input
+        autoFocus
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}

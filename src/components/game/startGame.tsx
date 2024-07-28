@@ -47,7 +47,8 @@ export default function StartGame({ setCards }: Props) {
 
       count++;
     }
-    sendMessage<ICard[]>("startGame", newItems, setCards);
+    setCards(newItems);
+    // sendMessage<ICard[]>("startGame", newItems, setCards);
   };
 
   return (
