@@ -2,11 +2,10 @@ import React, {
   Dispatch,
   PropsWithChildren,
   SetStateAction,
-  useEffect,
   useState,
 } from "react";
 import TeamColumn from "./TeamColumn";
-import { ETeamIdentifiers } from "@/constants/enums";
+import { ETeamIdentifiers, EUserRole } from "@/constants/enums";
 import Card from "../Card";
 import StartGame from "./startGame";
 
@@ -22,6 +21,15 @@ export default function MainGameComponent({
   setColumnUsers,
 }: Props) {
   const [cards, setCards] = useState<any[]>([]);
+  const [isHidden, setIsHidden] = useState(false);
+
+  const isColumnUserSpy =
+    columnUsers?.find((user: any) => user.name === playerName)?.userRole ===
+    EUserRole.Spy;
+
+  const toggleHidden = () => {
+    setIsHidden(!isHidden);
+  };
 
   return (
     <div className="flex justify-between">
@@ -36,17 +44,21 @@ export default function MainGameComponent({
 
       <div className="flex flex-col items-center">
         <div className="flex w-[900px] h-[600px] flex-wrap content-start ">
-          {cards &&
-            cards.map((card: any, index: number) => (
-              <Card
-                key={index}
-                word={card.word}
-                color={card.color}
-                status={card.status}
-              />
-            ))}
+          {cards.map((card: any, index: number) => (
+            <Card
+              isColumnUserSpy={isColumnUserSpy}
+              key={index}
+              word={card.word}
+              color={card.color}
+              status={"close"}
+            />
+          ))}
         </div>
-        <StartGame setCards={setCards} />
+        <StartGame
+          setCards={setCards}
+          hidden={isHidden}
+          toggleHidden={toggleHidden}
+        />
       </div>
 
       {columnUsers && playerName && (

@@ -4,17 +4,20 @@ import { words } from "@/words";
 import { sendMessage } from "./socketConnection";
 import { ECardStatus } from "@/constants/enums";
 import clearCards from "../../../requesters/clearCards";
+import shuffleArray from "@/utilities/arrays/shuffleArray";
 
-type ICard = {
+export type ICard = {
   word: string;
   color: string;
   status: ECardStatus;
 };
 type Props = PropsWithChildren<{
+  hidden: boolean;
+  toggleHidden: () => void;
   setCards: Dispatch<any>;
 }>;
 
-export default function StartGame({ setCards }: Props) {
+export default function StartGame({ setCards, hidden, toggleHidden }: Props) {
   const [cardsAmount] = useState<number>(25);
   const [randomizedWords] = useState(getRandomItems(words, 25));
 
@@ -24,6 +27,7 @@ export default function StartGame({ setCards }: Props) {
   }
 
   const starting = async () => {
+    toggleHidden();
     await clearCards();
     const newItems: ICard[] = [];
     const colors = ["red", "blue", "dark", "white"];
@@ -47,13 +51,16 @@ export default function StartGame({ setCards }: Props) {
 
       count++;
     }
-    setCards(newItems);
+    const shufledCards = shuffleArray(newItems);
+    setCards(shufledCards);
     // sendMessage<ICard[]>("startGame", newItems, setCards);
   };
 
   return (
     <button
-      className="border-b rounded-y-md border-black bg-neutral-800 overflow-hidden rounded-md w-3/4"
+      className={`${
+        hidden ? "hidden" : "block"
+      } border-b rounded-y-md border-black bg-neutral-800 overflow-hidden rounded-md w-3/4`}
       onClick={starting}
     >
       Start Game

@@ -24,9 +24,7 @@ export default function Page() {
   }
 
   useEffect(() => {
-    console.log(123);
     connectSocket("/api/socketio");
-    console.log(123);
 
     prepareUser();
     if (typeof window !== "undefined" && window.localStorage) {
